@@ -3,18 +3,28 @@ module "cloudfront" {
 
   domain_name            = "tjuhasztest.williamhill.com"
   environment            = var.environment
-  origin_domain_name     = module.s3_bucket_1.bucket_domain_name
-  origin_id              = "s3_bucket_1"
+  origins = {
+    "s3_bucket_1" = {
+      domain_name = module.s3_bucket_1.bucket_domain_name
+      origin_path = join("", ["/", var.environment])
+    }
+  }
   default_cache_behavior = {
     target_origin_id = "s3_bucket_1"
   }
+  cache_behaviours = [{
+    path_pattern     = "/auth"
+    target_origin_id = "s3_bucket_1"
+  }
+  ]
 }
 
 module "s3_bucket_1" {
   source = "./modules/aws_s3_bucket"
 
-  bucket_name = "wh-testbucket-1"
-  environment = var.environment
+  bucket_name    = "wh-testbucket-1"
+  environment    = var.environment
+  cloudfront_arn = [module.cloudfront.arn]
 
   s3_objects = {
     "/dev/index.html" = {

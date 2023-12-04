@@ -53,3 +53,24 @@ resource "aws_s3_object" "object" {
   content      = each.value.content
   content_type = each.value.content_type
 }
+
+resource "aws_s3_bucket_policy" "cdn-oac-bucket-policy" {
+  bucket = aws_s3_bucket.bucket.id
+  policy = data.aws_iam_policy_document.s3_bucket_policy.json
+}
+
+data "aws_iam_policy_document" "s3_bucket_policy" {
+  statement {
+    actions = [ "s3:GetObject" ]
+    resources = [ "${aws_s3_bucket.bucket.arn}/${var.environment}/*" ]
+    principals {
+      type = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test = "StringEquals"
+      variable = "AWS:SourceArn"
+      values = var.cloudfront_arn
+    }
+  }
+}

@@ -8,16 +8,6 @@ variable "domain_name" {
   description = "CF domain name"
 }
 
-variable "origin_domain_name" {
-  type        = string
-  description = "Default origin domain name"
-}
-
-variable "origin_id" {
-  type        = string
-  description = "Unique identifier for the origin"
-}
-
 variable "enabled" {
   type        = bool
   description = "Whether if the CF distribution is enabled or not"
@@ -48,6 +38,15 @@ variable "aliases" {
   default     = null
 }
 
+variable "origins" {
+  description = "CloudFront origins"
+  type = map(object({
+    domain_name = string
+    origin_path = optional(string, null)
+  }))
+  default = {}
+}
+
 variable "default_cache_behavior"{
   description = "Default cache behaviour settings"
   type = object({
@@ -63,6 +62,7 @@ variable "default_cache_behavior"{
 }
 
 variable "cache_behaviours" {
+  description = "Ordered cache behaviours"
   type = list(object({
     path_pattern           = string
     allowed_methods        = optional(list(string), ["GET", "HEAD"])
@@ -87,6 +87,12 @@ variable "geo_restriction_locations" {
   type        = list(string)
   description = "ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist). If the type is specified as none an empty array can be used"
   default     = []
+}
+
+variable "minimum_protocol_version" {
+  type        = string
+  description = "Minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections"
+  default     = "TLSv1.2_2021"
 }
 
 variable "additional_tags" {

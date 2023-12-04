@@ -1,9 +1,4 @@
 resource "aws_cloudfront_distribution" "s3_distribution" {
-  origin {
-    domain_name = var.origin_domain_name
-    origin_id   = var.origin_id
-  }
-
   enabled             = var.enabled
   is_ipv6_enabled     = var.is_ipv6_enabled
   comment             = join(" ", [var.environment, var.domain_name, "CF distribution"])
@@ -11,6 +6,22 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   price_class         = var.price_class
 
   aliases = var.aliases
+
+  dynamic origin {
+    for_each = {
+      for key, value in var.origins :
+      key => value
+    }
+    content {
+      domain_name = origin.value.domain_name
+      origin_id   = origin.key
+      origin_path = origin.value.origin_path
+
+      s3_origin_config {
+        origin_access_identity = aws_cloudfront_origin_access_identity.cloudfront.cloudfront_access_identity_path
+      }
+    }
+  }
 
   default_cache_behavior {
     allowed_methods  = var.default_cache_behavior.allowed_methods
@@ -69,11 +80,16 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   viewer_certificate {
    cloudfront_default_certificate = true
+    minimum_protocol_version      = var.minimum_protocol_version
   }
 
   lifecycle {
     ignore_changes = [web_acl_id]
   }
+}
+
+resource "aws_cloudfront_origin_access_identity" "cloudfront" {
+  comment = join(" ", [var.environment, var.domain_name, "CF origin access identity"])
 }
 
 #resource "aws_acm_certificate" "cert" {

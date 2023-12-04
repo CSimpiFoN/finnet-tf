@@ -88,3 +88,8 @@ variable "s3_objects" {
   }))
   default = {}
 }
+
+variable "cloudfront_arn" {
+  type        = list(string)
+  description = "ARN of the CF distribution to access the bucket"
+}
