@@ -20,6 +20,13 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
   restrict_public_buckets = var.restrict_public_buckets
 }
 
+resource "aws_s3_bucket_ownership_controls" "example" {
+  bucket = aws_s3_bucket.bucket.id
+  rule {
+    object_ownership = var.object_ownership
+  }
+}
+
 resource "aws_s3_bucket_acl" "bucket_acl" {
 
   bucket = aws_s3_bucket.bucket.id
@@ -32,4 +39,17 @@ resource "aws_s3_bucket_versioning" "bucket_versioning" {
   versioning_configuration {
     status = var.versioning_enabled
   }
+}
+
+resource "aws_s3_object" "object" {
+  for_each = {
+    for key, value in var.s3_objects :
+    key => value
+  }
+
+  bucket       = var.bucket_name
+  acl          = var.bucket_acl
+  key          = each.key
+  content      = each.value.content
+  content_type = each.value.content_type
 }

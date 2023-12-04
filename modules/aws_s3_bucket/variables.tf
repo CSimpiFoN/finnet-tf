@@ -62,6 +62,12 @@ variable "bucket_acl" {
   default     = "private"
 }
 
+variable "object_ownership" {
+  type        = string
+  description = "Object ownership. Valid values: BucketOwnerPreferred, ObjectWriter or BucketOwnerEnforced"
+  default     = "BucketOwnerEnforced"
+}
+
 variable "versioning_enabled" {
   type        = string
   description = "Versioning state of the bucket. Valid values: Enabled, Suspended, or Disabled"
@@ -72,4 +78,13 @@ variable "additional_tags" {
   type        = map(string)
   description = "Additional resource tags"
   default     = null
+}
+
+variable "s3_objects" {
+  description = "S3 objects to upload into the bucket"
+  type = map(object({
+    content      = optional(string, null)
+    content_type = optional(string, null)
+  }))
+  default = {}
 }

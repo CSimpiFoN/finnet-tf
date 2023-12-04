@@ -2,9 +2,12 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      tags_all = {
-        environment = merge(var.environment, var.additional_tags)
-      }
     }
+  }
+}
+
+provider "aws" {
+  default_tags {
+    tags = merge({Name: var.domain_name},{Environment: var.environment}, var.additional_tags)
   }
 }

@@ -8,6 +8,11 @@ variable "domain_name" {
   description = "CF domain name"
 }
 
+variable "origin_domain_name" {
+  type        = string
+  description = "Default origin domain name"
+}
+
 variable "origin_id" {
   type        = string
   description = "Unique identifier for the origin"
@@ -45,16 +50,16 @@ variable "aliases" {
 
 variable "default_cache_behavior"{
   description = "Default cache behaviour settings"
-  type = map(object({
-    allowed_methods        = optional(list(string, ["GET", "HEAD"]))
-    cached_methods         = optional(list(string, ["GET", "HEAD"]))
+  type = object({
+    allowed_methods        = optional(list(string), ["GET", "HEAD"])
+    cached_methods         = optional(list(string), ["GET", "HEAD"])
     target_origin_id       = string
     viewer_protocol_policy = optional(string, "redirect-to-https")
     min_ttl                = optional(number, 0)
     default_ttl            = optional(number, 3600)
     max_ttl                = optional(number, 86400)
     compress               = optional(bool, true)
-  }))
+  })
 }
 
 variable "cache_behaviours" {
