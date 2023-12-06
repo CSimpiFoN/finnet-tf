@@ -1,0 +1,10 @@
+# IDE file
+.idea/*
+
+# Terraform cached files
+.terraform
+.terraform*
+
+# Terraform local states
+terraform.tfstate
+terraform.tfstate.backup
