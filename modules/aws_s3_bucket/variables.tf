@@ -65,7 +65,7 @@ variable "bucket_acl" {
 variable "object_ownership" {
   type        = string
   description = "Object ownership. Valid values: BucketOwnerPreferred, ObjectWriter or BucketOwnerEnforced"
-  default     = "BucketOwnerEnforced"
+  default     = "BucketOwnerPreferred"
 }
 
 variable "versioning_enabled" {
