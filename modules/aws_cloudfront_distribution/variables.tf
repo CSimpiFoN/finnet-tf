@@ -3,9 +3,9 @@ variable "environment" {
   description = "System environment. dev, stg, prd"
 }
 
-variable "domain_name" {
+variable "path" {
   type        = string
-  description = "CF domain name"
+  description = "Path pattern"
 }
 
 variable "enabled" {
