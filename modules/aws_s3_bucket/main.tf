@@ -20,7 +20,7 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
   restrict_public_buckets = var.restrict_public_buckets
 }
 
-resource "aws_s3_bucket_ownership_controls" "example" {
+resource "aws_s3_bucket_ownership_controls" "ownership" {
   bucket = aws_s3_bucket.bucket.id
   rule {
     object_ownership = var.object_ownership
@@ -31,6 +31,8 @@ resource "aws_s3_bucket_acl" "bucket_acl" {
 
   bucket = aws_s3_bucket.bucket.id
   acl    = var.bucket_acl
+
+  depends_on = [aws_s3_bucket_ownership_controls.ownership]
 }
 
 resource "aws_s3_bucket_versioning" "bucket_versioning" {
@@ -52,6 +54,8 @@ resource "aws_s3_object" "object" {
   key          = each.key
   content      = each.value.content
   content_type = each.value.content_type
+
+  depends_on = [aws_s3_bucket.bucket]
 }
 
 resource "aws_s3_bucket_policy" "cdn-oac-bucket-policy" {
@@ -61,6 +65,7 @@ resource "aws_s3_bucket_policy" "cdn-oac-bucket-policy" {
 
 data "aws_iam_policy_document" "s3_bucket_policy" {
   statement {
+    sid     = "AllowCloudFrontServicePrincipal"
     actions = [ "s3:GetObject" ]
     resources = [ "${aws_s3_bucket.bucket.arn}/${var.environment}/*" ]
     principals {

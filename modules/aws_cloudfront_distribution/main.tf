@@ -1,7 +1,7 @@
 resource "aws_cloudfront_distribution" "s3_distribution" {
   enabled             = var.enabled
   is_ipv6_enabled     = var.is_ipv6_enabled
-  comment             = join(" ", [var.environment, var.domain_name, "CF distribution"])
+  comment             = join(" ", [var.environment, var.path, "CF distribution"])
   default_root_object = var.default_root_object
   price_class         = var.price_class
 
@@ -16,10 +16,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       domain_name = origin.value.domain_name
       origin_id   = origin.key
       origin_path = origin.value.origin_path
-
-      s3_origin_config {
-        origin_access_identity = aws_cloudfront_origin_access_identity.cloudfront.cloudfront_access_identity_path
-      }
+      origin_access_control_id = aws_cloudfront_origin_access_control.cloudfront_s3_oac.id
     }
   }
 
@@ -88,15 +85,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 }
 
-resource "aws_cloudfront_origin_access_identity" "cloudfront" {
-  comment = join(" ", [var.environment, var.domain_name, "CF origin access identity"])
+resource "aws_cloudfront_origin_access_control" "cloudfront_s3_oac" {
+  name                              = join(" ", [var.environment, var.path, "S3 OAC"])
+  description                       = join(" ", [var.environment, var.path, "CF origin access control"])
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
-#resource "aws_acm_certificate" "cert" {
-#  domain_name               = var.domain_name
-#  subject_alternative_names = var.aliases
-
-#  lifecycle {
-#    create_before_destroy = true
-#  }
-#}
