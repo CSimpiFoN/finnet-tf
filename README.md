@@ -76,7 +76,7 @@ Called by static-site module
 | <a name="input_bucket_id"></a> [bucket_id](#input\_bucket_id)                         | S3 Bucket ID                               | `string` | `N/A`     |   yes    |
 | <a name="input_bucket_arn"></a> [bucket_arn](#input\_bucket_arn)                         | S3 Bucket ARN                               | `string` | `N/A`     |   yes    |
 
-### aws_3_bucket
+### aws_s3_bucket
 Local module to create and configure S3 Buckets<br>
 [./modules/aws_s3_bucket](https://github.com/CSimpiFoN/finnet-tf/tree/main/modules/aws_s3_bucket)<br>
 Called by static-site module
