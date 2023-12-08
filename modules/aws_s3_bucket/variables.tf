@@ -74,12 +74,6 @@ variable "versioning_enabled" {
   default     = "Enabled"
 }
 
-variable "additional_tags" {
-  type        = map(string)
-  description = "Additional resource tags"
-  default     = null
-}
-
 variable "s3_objects" {
   description = "S3 objects to upload into the bucket"
   type = map(object({
@@ -87,9 +81,4 @@ variable "s3_objects" {
     content_type = optional(string, null)
   }))
   default = {}
-}
-
-variable "cloudfront_arn" {
-  type        = list(string)
-  description = "ARN of the CF distribution to access the bucket"
 }

@@ -93,3 +93,25 @@ resource "aws_cloudfront_origin_access_control" "cloudfront_s3_oac" {
   signing_protocol                  = "sigv4"
 }
 
+resource "aws_s3_bucket_policy" "cdn-oac-bucket-policy" {
+  bucket = var.bucket_id
+  policy = data.aws_iam_policy_document.s3_bucket_policy.json
+}
+
+data "aws_iam_policy_document" "s3_bucket_policy" {
+  statement {
+    sid     = "AllowCloudFrontServicePrincipal"
+    actions = [ "s3:GetObject" ]
+    resources = [ "${var.bucket_arn}/${var.environment}/*" ]
+    principals {
+      type = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+    condition {
+      test = "StringEquals"
+      variable = "AWS:SourceArn"
+      values = [aws_cloudfront_distribution.s3_distribution.arn]
+    }
+  }
+}
+

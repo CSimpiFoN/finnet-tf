@@ -95,8 +95,10 @@ variable "minimum_protocol_version" {
   default     = "TLSv1.2_2021"
 }
 
-variable "additional_tags" {
-  type        = map(string)
-  description = "Additional resource tags"
-  default     = null
+variable "bucket_id" {
+  type  = string
+}
+
+variable "bucket_arn" {
+  type   = string
 }

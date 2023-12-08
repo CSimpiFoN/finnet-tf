@@ -40,10 +40,21 @@ Terraform Code to set up AWS S3 bucket and CloudFront Distributions<r>
 | <a name="provider_vault"></a> [aws](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)    | >= 5.29.0  |
 
 ## Modules
+### static_sites
+Local module to create static sites with all their necessary resources
+[./modules/aws_cloudfront_distribution](https://github.com/CSimpiFoN/finnet-tf/tree/main/modules/static-site)<br>
+Called by main module
+
 ### aws_cloudfront_distribution
 Local module to create and configure CloudFront Distributions<br>
 [./modules/aws_cloudfront_distribution](https://github.com/CSimpiFoN/finnet-tf/tree/main/modules/aws_cloudfront_distribution)<br>
-Called by main module
+Called by static-site module
+| Name                                                                            | Description                                      | Type          | Default | Required |
+|---------------------------------------------------------------------------------|--------------------------------------------------|---------------|---------|:--------:|
+| <a name="input_static_sites"></a> [static_sites](#input\_static_sites)          | Static Sites         | `string`      | `N/A`   |   yes    |
+| <a name="input_environment"></a> [environment](#input\_environment)             | System environment   | `string`      | `N/A`   |   yes    |
+| <a name="input_additional_tags"></a> [additional_tags](#input\_additional_tags) | Additional resource tags                               | `map(string)` | `null`     |   no    |
+
 
 #### Main Inputs
 | Name                                                                            | Description                                      | Type          | Default | Required |
@@ -61,12 +72,11 @@ Called by main module
 | <a name="input_geo_restriction_type"></a> [geo_restriction_type](#input\_geo_restriction_type) | Method that you want to use to restrict distribution of your content               | `string`      | `"none"`   |   no    |
 | <a name="input_geo_restriction_locations"></a> [geo_restriction_locations](#input\_geo_restriction_locations) | ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist) | `list(string)`| `[]`     |   no    |
 | <a name="input_minimum_protocol_version"></a> [minimum_protocol_version](#input\_minimum_protocol_version) | Minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections    | `string`      | `"TLSv1.2_2021"`|   no |
-| <a name="input_additional_tags"></a> [additional_tags](#input\_additional_tags) | Additional resource tags                               | `map(string)` | `null`     |   no    |
 
 ### aws_3_bucket
 Local module to create and configure S3 Buckets<br>
 [./modules/aws_s3_bucket](https://github.com/CSimpiFoN/finnet-tf/tree/main/modules/aws_s3_bucket)<br>
-Called by main module
+Called by static-site module
 | Name                                                                | Description                                                          | Type      | Default | Required |
 |---------------------------------------------------------------------|----------------------------------------------------------------------|-----------|---------|:--------:|
 | <a name="input_environment"></a> [environment](#input\_environment) | System environment (dev, staging, prd)                               | `string`  | `N/A`   |   yes    |
@@ -82,7 +92,6 @@ Called by main module
 | <a name="input_bucket_acl"></a> [bucket_acl](#input\_bucket_acl) | The canned ACL to apply                                              | `string`  | `"private"` |   no    |
 | <a name="input_object_ownership"></a> [object_ownership](#input\_object_ownership) | Object ownership                      | `string`  | `"BucketOwnerPreferred"` |   no    |
 | <a name="input_versioning_enabled"></a> [versioning_enabled](#input\_versioning_enabled) | Versioning state of the bucket               | `string`  | `"Enabled"` |   no    |
-| <a name="input_additional_tags"></a> [additional_tags](#input\_additional_tags) | Additional resource tags                                | `map(string)`  | `{}` |   no    |
 | <a name="input_s3_objects"></a> [s3_objects](#input\_s3_objects) | S3 objects to upload into the bucket                                   | `map(object)`  | `{}` |   no    |
 | <a name="input_cloudfront_arn"></a> [cloudfront_arn](#input\_cloudfront_arn) | ARN of the CF distribution to access the bucket           | `list(string)` | `N/A` |   yes   |
 
@@ -94,48 +103,18 @@ Called by main module
 !Important notes!<br>
 Highly advised to use separate state stores per environment to lower blast radius<br>
 
-To add a new URI with dedicated CF and S3, add the corresponding code to the cloudfront_distributions.tf, s3_buckets.tf and outputs.tf<br>
-Replace the '#' with actual number and 'uri' with URI like /path
+To add a new URI with dedicated CF and S3, add the corresponding code to the static_sites.tf<br>
+Replace the '#' with actual number and 'uri_path' with URI like /path
 ```
-module "cloudfront_#" {
-  source = "./modules/aws_cloudfront_distribution"
-
-  path        = "uri"
-  environment = var.environment
-  origins = {
-    "s3_bucket_1" = {
-      domain_name = module.s3_bucket_#.bucket_domain_name
-      origin_path = join("", ["/", var.environment])
+    uri_path = {
+      site_number = #
     }
-  }
-  default_cache_behavior = {
-    target_origin_id = "s3_bucket_#"
-  }
-  cache_behaviours = [{
-    path_pattern     = "/uri"
-    target_origin_id = "s3_bucket_#"
-  }
-  ]
-}
-```
-```
-module "s3_bucket_#" {
-  source = "./modules/aws_s3_bucket"
-
-  bucket_name = join("", ["Bucket#_", var.environment])
-  cloudfront_arn = [module.cloudfront_#.arn]
-  environment = var.environment
-}
-```
-```
-output "domain_name_#" {
-  value = module.cloudfront_#.domain_name
-}
 ```
 
 # Design decisions
 The code has been designed to be modular for easy change and extension, the 2 different resource types have their own modules prepared.<br>
 - Small modules have been written to make it possible to make changes to every related environment/cf/s3 centrally. So after a change, a re-deployment picks the changes up everywhere
+- A wrapper module has been written to reduce code duplication and make the usage easier (static-site module)
 - As many options got a default value as possible in order to make it easier to add new setups, and reduce code duplication
 - Deployments are prepared to be separated by environment
 
