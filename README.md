@@ -45,18 +45,17 @@ Local module to create static sites with all their necessary resources
 [./modules/aws_cloudfront_distribution](https://github.com/CSimpiFoN/finnet-tf/tree/main/modules/static-site)<br>
 Called by main module
 
-### aws_cloudfront_distribution
-Local module to create and configure CloudFront Distributions<br>
-[./modules/aws_cloudfront_distribution](https://github.com/CSimpiFoN/finnet-tf/tree/main/modules/aws_cloudfront_distribution)<br>
-Called by static-site module
+#### Main Inputs
 | Name                                                                            | Description                                      | Type          | Default | Required |
 |---------------------------------------------------------------------------------|--------------------------------------------------|---------------|---------|:--------:|
 | <a name="input_static_sites"></a> [static_sites](#input\_static_sites)          | Static Sites         | `string`      | `N/A`   |   yes    |
 | <a name="input_environment"></a> [environment](#input\_environment)             | System environment   | `string`      | `N/A`   |   yes    |
 | <a name="input_additional_tags"></a> [additional_tags](#input\_additional_tags) | Additional resource tags                               | `map(string)` | `null`     |   no    |
 
-
-#### Main Inputs
+### aws_cloudfront_distribution
+Local module to create and configure CloudFront Distributions<br>
+[./modules/aws_cloudfront_distribution](https://github.com/CSimpiFoN/finnet-tf/tree/main/modules/aws_cloudfront_distribution)<br>
+Called by static-site module
 | Name                                                                            | Description                                      | Type          | Default | Required |
 |---------------------------------------------------------------------------------|--------------------------------------------------|---------------|---------|:--------:|
 | <a name="input_environment"></a> [environment](#input\_environment)             | System environment (dev, staging, prd)           | `string`      | `N/A`   |   yes    |
