@@ -41,7 +41,7 @@ Terraform Code to set up AWS S3 bucket and CloudFront Distributions<r>
 
 ## Modules
 ### static_sites
-Local module to create static sites with all their necessary resources
+Local module to create static sites with all their necessary resources<br>
 [./modules/aws_cloudfront_distribution](https://github.com/CSimpiFoN/finnet-tf/tree/main/modules/static-site)<br>
 Called by main module
 
