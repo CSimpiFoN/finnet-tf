@@ -9,18 +9,20 @@ Terraform Code to set up AWS S3 bucket and CloudFront Distributions<r>
 │   ├── aws_cloudfront_distribution
 │   │   ├── main.tf
 │   │   ├── outputs.tf
-│   │   ├── providers.tf
 │   │   └── variables.tf
-│   └── aws_s3_bucket
+│   ├── aws_s3_bucket
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   └── static_site
 │       ├── main.tf
 │       ├── outputs.tf
 │       ├── providers.tf
 │       └── variables.tf
 ├── backend.tf
-├── cloudfront_distributions.tf
+├── static_sites.tf
 ├── outputs.tf
 ├── README.md
-├── s3_buckets.tf
 └── variables.tf
 ```
 
