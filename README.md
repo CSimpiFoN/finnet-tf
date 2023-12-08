@@ -131,3 +131,4 @@ With this, changes can be deployed to respective environments separately, withou
 # Other considerations for production usage
 - Apply human friendly DNS name for the CloudFront endpoints with AWS-managed SSL certificates
 - Use only 1 CloudFront distribution and S3 bucket per environment for simplicity and cost savings
+- Replace site_number with generated value
