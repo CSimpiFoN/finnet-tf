@@ -73,6 +73,8 @@ Called by static-site module
 | <a name="input_geo_restriction_type"></a> [geo_restriction_type](#input\_geo_restriction_type) | Method that you want to use to restrict distribution of your content               | `string`      | `"none"`   |   no    |
 | <a name="input_geo_restriction_locations"></a> [geo_restriction_locations](#input\_geo_restriction_locations) | ISO 3166-1-alpha-2 codes for which you want CloudFront either to distribute your content (whitelist) or not distribute your content (blacklist) | `list(string)`| `[]`     |   no    |
 | <a name="input_minimum_protocol_version"></a> [minimum_protocol_version](#input\_minimum_protocol_version) | Minimum version of the SSL protocol that you want CloudFront to use for HTTPS connections    | `string`      | `"TLSv1.2_2021"`|   no |
+| <a name="input_bucket_id"></a> [bucket_id](#input\_bucket_id)                         | S3 Bucket ID                               | `string` | `N/A`     |   yes    |
+| <a name="input_bucket_arn"></a> [bucket_arn](#input\_bucket_arn)                         | S3 Bucket ARN                               | `string` | `N/A`     |   yes    |
 
 ### aws_3_bucket
 Local module to create and configure S3 Buckets<br>
@@ -94,7 +96,6 @@ Called by static-site module
 | <a name="input_object_ownership"></a> [object_ownership](#input\_object_ownership) | Object ownership                      | `string`  | `"BucketOwnerPreferred"` |   no    |
 | <a name="input_versioning_enabled"></a> [versioning_enabled](#input\_versioning_enabled) | Versioning state of the bucket               | `string`  | `"Enabled"` |   no    |
 | <a name="input_s3_objects"></a> [s3_objects](#input\_s3_objects) | S3 objects to upload into the bucket                                   | `map(object)`  | `{}` |   no    |
-| <a name="input_cloudfront_arn"></a> [cloudfront_arn](#input\_cloudfront_arn) | ARN of the CF distribution to access the bucket           | `list(string)` | `N/A` |   yes   |
 
 # Usage
 ## Mandatory environmental variables
